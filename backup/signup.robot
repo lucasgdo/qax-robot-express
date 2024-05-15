@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Cenários de teste de cadastro de usuários
+Documentation    Cenários de testes do cadastro de usuários
 Resource    ../resources/base.resource
 Test Setup    Start Session
 Test Teardown    Take Screenshot
@@ -10,7 +10,6 @@ Deve poder cadastrar um novo usuário
     ...    name=Fernando Papito
     ...    email=papito@yahoo.com
     ...    password=pwd123
-    
     Remove User From Database    ${user}[email]
     Go To Signup Page
     Submit Signup Form    ${user}
@@ -22,7 +21,6 @@ Não deve permitir o cadastro com email duplicado
     ...    name=Fernando Papito
     ...    email=fernando@gmail.com
     ...    password=pwd123
-    
     Remove User From Database    ${user}[email]
     Insert User Into Database    ${user}
     Go To Signup Page
@@ -53,17 +51,39 @@ Não deve permitir o cadastro com email incorreto
     Submit Signup Form    ${user}
     Alert Should Be    Digite um e-mail válido
 
-Não deve permitir o cadastro com senha muito curta
-    [Tags]    temp
-    @{password_list}    Create List    1    12    123    1234    12345
+Não deve permitir o cadastro com senha de 1 dígito
+    [Tags]    short_pass
+    [Template]
+    Short password    1
 
-    FOR    ${password}    IN    @{password_list}
-        ${user}    Create Dictionary
-        ...    name=Fernando Papito
-        ...    email=papito@msn.com
-        ...    password=${password}
-        
-        Go To Signup Page
-        Submit Signup Form    ${user}
-        Alert Should Be    Informe uma senha com pelo menos 6 digitos
-    END
+Não deve permitir o cadastro com senha de 2 dígitos
+    [Tags]    short_pass
+    [Template]
+    Short password    2
+
+Não deve permitir o cadastro com senha de 3 dígitos
+    [Tags]    short_pass
+    [Template]
+    Short password    3
+
+Não deve permitir o cadastro com senha de 4 dígitos
+    [Tags]    short_pass
+    [Template]
+    Short password    4
+
+Não deve permitir o cadastro com senha de 5 dígitos
+    [Tags]    short_pass
+    [Template]
+    Short password    5
+
+*** Keywords ***
+Short password
+    [Arguments]    ${short_pass}
+    ${user}    Create Dictionary
+    ...    name=Fernando Papito
+    ...    email=papito@msn.com
+    ...    password=${short_pass}
+    
+    Go To Signup Page
+    Submit Signup Form    ${user}
+    Alert Should Be    Informe uma senha com pelo menos 6 digitos
